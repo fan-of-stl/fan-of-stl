@@ -3,7 +3,7 @@ name: generate animation
 on:
   # run automatically every 12 hours
   schedule:
-    - cron: "0 */12 * * *" 
+    - cron: "0 */12 * * *"
 
   # allows to manually run the job at any time
   workflow_dispatch:
@@ -19,11 +19,20 @@ jobs:
     timeout-minutes: 10
 
     steps:
+      # Create the 'dist' directory if it doesn't exist
+      - name: Create dist directory
+        run: mkdir -p dist
+
       # generates a snake game from a github user (<github_user_name>) contributions graph, output a svg animation
       - name: Generate github-contribution-grid-snake.svg
         uses: Platane/snk@v3
         with:
           github_user_name: fan-of-stl
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Show the status of the build
+      - run: ls -la dist
 
       # Push the content of <build_dir> to a branch
       # The content will be available at https://raw.githubusercontent.com/<github_user>/<repository>/<target_branch>/<file>, or as GitHub Page
